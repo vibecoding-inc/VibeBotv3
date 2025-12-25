@@ -23,7 +23,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
       - name: Run Junie
-        uses: JetBrains/junie-github-action@v0
+        uses: vibecoding-inc/junie-github-action@main
         with:
           junie_api_key: ${{ secrets.JUNIE_API_KEY }}
           create_new_branch_for_pr: true
