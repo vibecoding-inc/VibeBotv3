@@ -15,6 +15,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      issues: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,17 +23,18 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+      
+      # Generate token from GitHub App
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Run Junie
-        uses: vibecoding-inc/junie-github-action@main
+        uses: JetBrains/junie-github-action@v0
         with:
           junie_api_key: ${{ secrets.JUNIE_API_KEY }}
+          custom_github_token: ${{ steps.app-token.outputs.token }}
           create_new_branch_for_pr: true
           prompt: ${{ github.event.inputs.prompt }}
           allowed_mcp_servers: "" # none at the moment
-      - name: Output
-        run: |
-          echo "Branch: ${{ steps.junie.outputs.branch_name }}"
-          echo "Title: ${{ steps.junie.outputs.junie_title }}"
-          if [ "${{ steps.junie.outputs.pr_url }}" != "" ]; then
-            echo "PR created: ${{ steps.junie.outputs.pr_url }}"
-          fi
