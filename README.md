@@ -9,12 +9,19 @@ A Discord bot built with JDA (Java Discord API) v6.2.0 and Java 21.
 - Structured logging with SLF4J and Logback
 - Dockerized for easy deployment
 - CI/CD with GitHub Actions
+- New /vibe slash command to trigger a GitHub Actions workflow that can make changes to the bot functionality
 
 ## Configuration
 
 The bot requires the following environment variable:
 
 - `BOT_TOKEN`: Your Discord bot token
+
+Optional environment variables for the /vibe command (GitHub workflow dispatch):
+
+- `JUNIE_GH_TOKEN` (preferred) or `GH_TOKEN`/`GITHUB_TOKEN`: A GitHub token with permissions to trigger workflow_dispatch on this repo
+- `JUNIE_REPOSITORY` (optional): Target repository in the form `owner/repo`. Defaults to `GITHUB_REPOSITORY` if present, otherwise `profiluefter/VibeBotv3`.
+- `JUNIE_REF` (optional): Branch or tag to run the workflow on. Defaults to `GITHUB_REF_NAME` if present, otherwise `main`.
 
 ## Building
 
@@ -33,6 +40,8 @@ The bot requires the following environment variable:
 
 ```bash
 export BOT_TOKEN=your_discord_bot_token_here
+# Optional but recommended for /vibe
+export JUNIE_GH_TOKEN=ghp_your_github_token_here
 java -jar build/libs/vibebotv3-1.0.0.jar
 ```
 
@@ -54,8 +63,14 @@ docker run -e BOT_TOKEN=your_discord_bot_token_here vibebotv3
 
 ```bash
 docker pull ghcr.io/profiluefter/vibebotv3:latest
-docker run -e BOT_TOKEN=your_discord_bot_token_here ghcr.io/profiluefter/vibebotv3:latest
+docker run -e BOT_TOKEN=your_discord_bot_token_here \
+           -e JUNIE_GH_TOKEN=ghp_your_github_token_here \
+           ghcr.io/profiluefter/vibebotv3:latest
 ```
+
+## Slash Commands
+
+- /vibe prompt: Triggers the junie.yml GitHub Actions workflow via workflow_dispatch, passing your prompt as input. This allows making changes to the bot functionality through an external automation workflow.
 
 ## GitHub Actions CI/CD
 
