@@ -22,6 +22,9 @@ dependencies {
     // Logging
     implementation("ch.qos.logback:logback-classic:1.5.12")
     implementation("org.slf4j:slf4j-api:2.0.16")
+
+    // Tests
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
 }
 
 application {
@@ -40,4 +43,8 @@ tasks.jar {
     // Create a fat jar with all dependencies
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
